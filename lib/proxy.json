@@ -1,0 +1,84 @@
+{
+    "name": "top",
+    "module" : "caf_platform#platform_main",
+    "description" : "Platform supervisor",
+    "env" : {
+        "maxRetries" : "process.env.maxRetries||10",
+        "retryDelay" : "process.env.retryDelay||1000",
+        "leaseTimeout": "process.env.leaseTimeout||10",
+        "interval": "process.env.interval||5000",
+        "longInterval": "process.env.longInterval||10000",
+        "dieDelay": "process.env.dieDelay||-1",
+        "maxHangRetries":  "process.env.maxHangRetries||200",
+        "publicHostname" : "process.env.publicHostname||foo.vcap.me",
+        "publicPortStart" : "process.env.publicPortStart||4000",
+        "publicPortEnd" : "process.env.publicPortEnd||4010"
+    },
+    "components": [
+        {
+            "name": "log",
+            "module": "caf_components#plug_log",
+            "description": "Logger service",
+            "env" : {
+                "logLevel" : "DEBUG"
+            }
+        },
+        {
+            "name": "paas",
+            "module": "caf_platform#plug_paas",
+            "description": "PaaS config service",
+             "env": {
+                 "paas" : "cloudfoundry",
+                 "port" : "process.env.VCAP_APP_PORT||3000",
+                 "host" : "process.env.VCAP_APP_HOST||localhost",
+                 "home": "process.env.HOME||/tmp",
+                 "redis" : {
+                     "port" : 6379,
+                     "hostname" : "localhost",
+                     "password" : null
+                 }
+             }
+        },
+        {
+            "name": "cp",
+            "module" : "caf_redis#plug",
+            "description" : "Checkpointing service",
+            "env" : {
+               "nodeId": "default",
+               "redis" : {
+                   "password" : null,
+                   "host" : "localhost",
+                   "port" : 6379
+                },
+                "coalescing" : {
+                    "interval" : 10,
+                    "maxPendingUpdates" : 20
+                }
+            }
+        },
+        {
+            "name": "nodes",
+            "module": "caf_platform#plug_nodes",
+            "description": "Nodes management service",
+            "env" : {
+                "nodesService" : "cp",
+                "leaseTimeout": "$._.env.leaseTimeout",
+                "allPublicNodeIds" : [
+                    {
+                        "hostname" : "$._.env.publicHostname",
+                        "portRange" : ["$._.env.publicPortStart",
+                                       "$._.env.publicPortEnd"]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "cron_nodes",
+            "module": "caf_platform#cron_nodes",
+            "description": "Nodes service cron",
+            "env" : {
+                "interval":"$._.env.interval"
+            }
+        }
+    ]
+}
