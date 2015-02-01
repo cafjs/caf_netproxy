@@ -1,0 +1,26 @@
+{
+    "ports": [
+      {"name": "p1", "localPort" : 4000, "remoteHost" : "localhost",
+       "remotePort" : 3000},
+      {"name": "p2", "localPort" : 4001, "remoteHost" : "localhost",
+       "remotePort" : 3001},
+      {"name": "p3", "localPort" : 4002, "remoteHost" : "localhost",
+       "remotePort" : 3002}
+    ],
+    "apps": [
+        {"appName": "foo.vcap.me",
+         "ports": [
+             {"name": "p1", "localPort" : 4000,"remoteHost" : "localhost",
+              "remotePort" : 3000},
+             {"name": "p2", "localPort" : 4001,"remoteHost" : "localhost",
+              "remotePort" : 3001}
+         ]
+        },
+        {"appName": "bar.vcap.me",
+         "ports": [
+             {"name": "p3", "localPort" : 4002,"remoteHost" : "localhost",
+              "remotePort" : 3002}
+         ]
+        }
+    ]
+}

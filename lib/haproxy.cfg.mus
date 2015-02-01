@@ -1,0 +1,48 @@
+
+global
+	log 127.0.0.1	local0
+	log 127.0.0.1	local1 notice
+	maxconn 10000
+	user haproxy
+	group haproxy
+	daemon
+
+defaults
+	log	global
+	mode	http
+	option	dontlognull
+	retries	3
+	option redispatch
+	timeout connect	5000
+	timeout client	50000
+	timeout server	50000
+  	timeout tunnel        3600s
+ 	timeout http-keep-alive  1s
+	timeout http-request    15s
+
+
+frontend  http-in 
+       bind 0.0.0.0:80 name http
+       option	httplog
+       option	http-server-close	    
+       option forwardfor	
+       maxconn 10000
+{{#apps}}
+       acl host_{{{appName}}} hdr(host) -i {{{appName}}}
+       use_backend bk_{{{appName}}} if host_{{{appName}}}
+{{/apps}}
+
+{{#apps}}	       
+backend bk_{{{appName}}}
+       balance roundrobin
+       {{#ports}}
+       server  srv_{{{name}}} {{{remoteHost}}}:{{{remotePort}}} check
+       {{/ports}}
+
+{{/apps}}
+{{#ports}}
+listen	{{{name}}} 0.0.0.0:{{{localPort}}}
+	mode	tcp
+	server	srv_{{{name}}} {{{remoteHost}}}:{{{remotePort}}}
+
+{{/ports}}

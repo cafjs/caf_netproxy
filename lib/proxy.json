@@ -61,6 +61,7 @@
             "module": "caf_platform#plug_nodes",
             "description": "Nodes management service",
             "env" : {
+                "stealthNode" : true,
                 "nodesService" : "cp",
                 "leaseTimeout": "$._.env.leaseTimeout",
                 "allPublicNodeIds" : [
@@ -70,6 +71,18 @@
                                        "$._.env.publicPortEnd"]
                     }
                 ]
+            }
+        },
+        {
+            "name": "haproxy",
+            "module": "./plug_haproxy",
+            "description": "HAProxy management service",
+            "env" : {
+                "templateFile" : "haproxy.cfg.mus",
+                "targetFile" : "/etc/haproxy/haproxy.cfg",
+                "pidFile" : "/var/run/haproxy.pid",
+                "reloadScript" : "reload.sh",
+                "checkLocalIP" : true
             }
         },
         {
