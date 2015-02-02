@@ -69,7 +69,13 @@
                         "hostname" : "$._.env.publicHostname",
                         "portRange" : ["$._.env.publicPortStart",
                                        "$._.env.publicPortEnd"]
+                    },
+                    {
+                        "hostname" : "bar.vcap.me",
+                        "portRange" : ["$._.env.publicPortStart",
+                                       "$._.env.publicPortEnd"]
                     }
+
                 ]
             }
         },
@@ -79,7 +85,7 @@
             "description": "HAProxy management service",
             "env" : {
                 "templateFile" : "haproxy.cfg.mus",
-                "targetFile" : "/etc/haproxy/haproxy.cfg",
+                "targetFile" : "/tmp/haproxy.cfg",
                 "pidFile" : "/var/run/haproxy.pid",
                 "reloadScript" : "reload.sh",
                 "checkLocalIP" : true

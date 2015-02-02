@@ -21,6 +21,6 @@ defaults
 {{#ports}}
 listen	{{{name}}} 0.0.0.0:{{{localPort}}}
 	mode	tcp
-	server	srv_{{{name}}} {{{remoteHost}}}:{{{remotePort}}}
+	server	srv_{{{name}}} {{{remoteTarget}}}
 
 {{/ports}}

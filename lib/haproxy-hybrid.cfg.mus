@@ -29,23 +29,20 @@ frontend  http-in
 {{#apps}}
        acl host_{{{appName}}} hdr(host) -i {{{appName}}}
        use_backend bk_{{{appName}}} if host_{{{appName}}}
-       {{#target}}
-       acl host_{{{appName}}}_{{{name}}} hdr(host) -i host{{{localPort}}}.{{{appName}}}
-       use_backend bk_{{{appName}}}_{{{name}}} if host_{{{appName}}}_{{{name}}}
-       {{/target}}
 {{/apps}}
 
 
 {{#apps}}	       
 backend bk_{{{appName}}}
        balance roundrobin
-       {{#target}}
+       {{#ports}}
        server  srv_{{{name}}} {{{remoteTarget}}} check
-       {{/target}}
+       {{/ports}}
 
-{{#target}}
-backend bk_{{{appName}}}_{{{name}}}
-       server  srv_{{{appName}}}_{{{name}}} {{{remoteTarget}}} check
-
-{{/target}}
 {{/apps}}
+{{#ports}}
+listen	{{{name}}} 0.0.0.0:{{{localPort}}}
+	mode	tcp
+	server	srv_{{{name}}} {{{remoteTarget}}}
+
+{{/ports}}

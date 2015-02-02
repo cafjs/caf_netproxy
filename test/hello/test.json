@@ -1,25 +1,19 @@
 {
     "ports": [
-      {"name": "p1", "localPort" : 4000, "remoteHost" : "localhost",
-       "remotePort" : 3000},
-      {"name": "p2", "localPort" : 4001, "remoteHost" : "localhost",
-       "remotePort" : 3001},
-      {"name": "p3", "localPort" : 4002, "remoteHost" : "localhost",
-       "remotePort" : 3002}
+      {"name": "p1", "localPort" : 4000, "remoteTarget" : "localhost:3000"},
+      {"name": "p2", "localPort" : 4001, "remoteTarget" : "localhost:3001"},
+      {"name": "p3", "localPort" : 4002, "remoteTarget" : "localhost:3002"}
     ],
     "apps": [
         {"appName": "foo.vcap.me",
-         "ports": [
-             {"name": "p1", "localPort" : 4000,"remoteHost" : "localhost",
-              "remotePort" : 3000},
-             {"name": "p2", "localPort" : 4001,"remoteHost" : "localhost",
-              "remotePort" : 3001}
+         "targets": [
+             {"name": "p1", "remoteTarget" : "localhost:3000"},
+             {"name": "p2", "remoteTarget" : "localhost:3001"}
          ]
         },
         {"appName": "bar.vcap.me",
-         "ports": [
-             {"name": "p3", "localPort" : 4002,"remoteHost" : "localhost",
-              "remotePort" : 3002}
+         "targets": [
+             {"name": "p3", "remoteTarget" : "localhost:3002"}
          ]
         }
     ]
