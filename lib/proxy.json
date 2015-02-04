@@ -64,19 +64,7 @@
                 "stealthNode" : true,
                 "nodesService" : "cp",
                 "leaseTimeout": "$._.env.leaseTimeout",
-                "allPublicNodeIds" : [
-                    {
-                        "hostname" : "$._.env.publicHostname",
-                        "portRange" : ["$._.env.publicPortStart",
-                                       "$._.env.publicPortEnd"]
-                    },
-                    {
-                        "hostname" : "bar.vcap.me",
-                        "portRange" : ["$._.env.publicPortStart",
-                                       "$._.env.publicPortEnd"]
-                    }
-
-                ]
+                "allPublicNodeIds" : null
             }
         },
         {
