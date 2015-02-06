@@ -9,7 +9,7 @@ See http://www.cafjs.com
 [![Build Status](http://ci.cafjs.com/github.com/cafjs/caf_netproxy/status.svg?branch=master)](http://ci.cafjs.com/github.com/cafjs/caf_netproxy)
 
 
-This library provides a network proxy (based on 'HAProxy') to load balance CA requests while respecting the uniqueness of CA instances in a data center.
+This library provides a network proxy (based on 'HAProxy') to load balance CA requests while respecting the uniqueness of CA instances in a data center. 
 
 
 ## API
