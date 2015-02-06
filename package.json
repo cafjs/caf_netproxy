@@ -12,7 +12,10 @@
 
     },
     "devDependencies": {
-        "nodeunit" : ">=0.9"
+        "nodeunit" : ">=0.9",
+        "caf_ca": "^0.2.0",
+        "caf_session": "^0.2.0",
+        "ws" : "^0.6.0"
     },
     "main": "index",
     "homepage": "http://www.cafjs.com",
