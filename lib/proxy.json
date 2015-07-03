@@ -25,16 +25,17 @@
         },
         {
             "name": "paas",
-            "module": "caf_platform#plug_paas",
+            "module": "./plug_paas",
             "description": "PaaS config service",
              "env": {
-                 "paas" : "cloudfoundry",
-                 "port" : "process.env.VCAP_APP_PORT||3000",
-                 "host" : "process.env.VCAP_APP_HOST||localhost",
+                 "paas" : "marathon",
+                 "port" : "process.env.PORT0||3000",
+                 "internalPort" : "process.env.DOCKER_APP_INTERNAL_PORT||-1",
+                 "host" : "process.env.HOST||localhost",
                  "home": "process.env.HOME||/tmp",
                  "redis" : {
-                     "port" : 6379,
-                     "hostname" : "localhost",
+                     "port" : "process.env.REDIS_PORT_6379_TCP_PORT||-1",
+                     "hostname" : "process.env.HOST||default",
                      "password" : null
                  }
              }
@@ -45,9 +46,10 @@
             "description" : "Checkpointing service",
             "env" : {
                "nodeId": "default",
-               "redis" : {
+                "paas" : "redis",
+                "redis" : {
                    "password" : null,
-                   "host" : "localhost",
+                   "hostname" : "localhost",
                    "port" : 6379
                 },
                 "coalescing" : {

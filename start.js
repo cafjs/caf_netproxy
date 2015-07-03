@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var np = require('caf_netproxy');
+var np = require('./index.js');
 
 np.run([module], function(err, top) {
            if (err) {

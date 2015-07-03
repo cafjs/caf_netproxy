@@ -99,7 +99,7 @@ module.exports = {
                                         }, 2000);
                          },
                          function(cb) {
-                             process.env['VCAP_APP_PORT']="3001";
+                             process.env['PORT0']="3001";
                              app.load(null, {name: 'top'}, 'framework.json',
                                       null, function(err, $) {
                                           if (err) {
