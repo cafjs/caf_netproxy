@@ -49,8 +49,8 @@
                 "paas" : "redis",
                 "redis" : {
                    "password" : null,
-                   "hostname" : "localhost",
-                   "port" : 6379
+                   "hostname" : "process.env.REDIS_PORT_6379_TCP_ADDR||localhost",
+                   "port" : "process.env.REDIS_PORT_6379_TCP_PORT||6379"
                 },
                 "coalescing" : {
                     "interval" : 10,
@@ -78,7 +78,7 @@
                 "targetFile" : "/tmp/haproxy.cfg",
                 "pidFile" : "/var/run/haproxy.pid",
                 "reloadScript" : "reload.sh",
-                "checkLocalIP" : true
+                "checkLocalIP" : false
             }
         },
         {

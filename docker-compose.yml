@@ -1,0 +1,10 @@
+app:
+  image: registry.cafjs.com:32000/root-netproxy
+  links: ["redis"]
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - /mnt/certs:/certs:ro 
+redis:
+  image: redis:2.8

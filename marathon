@@ -1,0 +1,44 @@
+{
+    "id": "netproxy",
+    "container": {
+        "type":"DOCKER",
+        "volumes":[
+            {
+               "containerPath":"/certs",
+                "hostPath":"/mnt/certs",
+                "mode":"RO"
+            }
+        ],
+        "docker": {
+            "image":"registry.cafjs.com:32000/root-netproxy",
+            "network":"BRIDGE",
+            "portMappings":[
+                {
+                    "containerPort":80,
+                    "hostPort":0,
+                    "servicePort":80,
+                    "protocol":"tcp"
+                },
+                {
+                    "containerPort":443,
+                    "hostPort":0,
+                    "servicePort":443,
+                    "protocol":"tcp"
+                }
+            ],
+            "privileged":false,
+            "parameters":[
+                {
+                    "key":"env",
+                    "value":"REDIS_PORT_6379_TCP_PORT=6380"
+                }
+            ],
+            "forcePullImage":true
+        }
+    },
+    "args": [],
+    "cpus": 0.1,
+    "mem": 320.0,
+    "instances": 1,
+    "constraints": [["hostname", "CLUSTER", "10.0.0.18"]]
+}
