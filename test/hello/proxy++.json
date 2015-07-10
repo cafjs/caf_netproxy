@@ -1,5 +1,10 @@
 {
     "name": "top",
+    "env" : {
+        "appPublisher" :"root",
+        "appLocalName" : "test",
+        "appSuffix" : "vcap.me"
+    },
     "components": [
         {
             "name": "haproxy",
