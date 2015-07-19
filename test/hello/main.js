@@ -15,7 +15,7 @@ exports.loadProxy = function(cb) {
     modules.push(module);
     modules.push(np.getModule());
 
-    np.run(modules, function(err, top) {
+    np.run(modules, 'proxy-local.json', function(err, top) {
                if (err) {
                    console.log('Error: ' + err);
                } else {

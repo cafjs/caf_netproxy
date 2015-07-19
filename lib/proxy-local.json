@@ -44,46 +44,22 @@
              }
         },
         {
-            "module": "caf_deploy#plug",
-            "name": "deploy",
-            "description": "Shared plug to deploy apps in Mesos/Marathon\n Properties: \n",
-            "env": {
-                "listAllRedisPorts" : "process.env.LIST_ALL_REDIS_PORTS||true",
-                "refreshInterval" : "process.env.REFRESH_INTERVAL||1000",
-                "target" : "process.env.MARATHON_TARGET||http://localhost:8080",
-                "username" : "process.env.MARATHON_USERNAME||root",
-                "password" : "process.env.MARATHON_KEY_PASSWORD||pleasechange",
+            "name": "cp",
+            "module" : "caf_redis#plug",
+            "description" : "Checkpointing service",
+            "env" : {
+                "nodeId": "default",
+                "paas" : "redis",
                 "redis" : {
-                    "templateFile" : "process.env.REDIS_TEMPLATE_FILE||marathon.redis.mus",
-                    "prefixID": "process.env.REDIS_PREFIX_ID||redis",
-                    "rangePortStart" : "process.env.REDIS_RANGE_PORT_START||7380",
-                    "rangePortEnd" : "process.env.REDIS_RANGE_PORT_END||7480",
-                    "hostname" : "process.env.REDIS_HOSTNAME||10.0.0.15",
-                    "image" : "process.env.REDIS_IMAGE||redis:2.8",
-                    "cpus" : "process.env.REDIS_CPUS||0.1",
-                    "memory" : "process.env.REDIS_MEMORY||64.0"
+                    "password" : null,
+                    "hostname" : "process.env.REDIS_PORT_6379_TCP_ADDR||localhost",
+                    "port" : "process.env.REDIS_PORT_6379_TCP_PORT||6379"
                 },
-                "app" : {
-                    "templateFile" : "process.env.APP_TEMPLATE_FILE||marathon.app.mus",
-                    "args": "process.env.APP_ARGS||[]",
-                    "cpus" : "process.env.APP_CPUS||0.1",
-                    "memory" : "process.env.APP_MEMORY||64.0",
-                    "instances": "process.env.APP_INSTANCES||1",
-                    "services" :["redis"]
+                "coalescing" : {
+                    "interval" : 10,
+                    "maxPendingUpdates" : 20
                 }
             }
-        },
-        {
-            "name": "cp",
-            "module" : "./plug_multi_redis",
-            "description" : "Checkpointing service aggregator",
-            "env" : {
-                "maxRetries" : 1,
-                "retryDelay" : "$._.env.retryDelay",
-                "__redis_json__" : "redis.json"
-            },
-            "components": [
-            ]
         },
         {
             "name": "nodes",

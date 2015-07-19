@@ -1,0 +1,19 @@
+{
+    "name": "cp",
+    "module" : "caf_redis#plug",
+    "description" : "Checkpointing service",
+    "env" : {
+       "__ca_temporary__" : true,
+        "nodeId": "default",
+        "paas" : "ignore",
+        "redis" : {
+            "password" : null,
+            "hostname" : "process.env.REDIS_PORT_6379_TCP_ADDR||localhost",
+            "port" : "process.env.REDIS_PORT_6379_TCP_PORT||6379"
+        },
+        "coalescing" : {
+            "interval" : 10,
+            "maxPendingUpdates" : 20
+        }
+    }
+}
