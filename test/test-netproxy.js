@@ -2,7 +2,7 @@ var caf_core =  require('caf_core');
 var caf_comp = caf_core.caf_components;
 var async = caf_comp.async;
 var myUtils = caf_comp.myUtils;
-var json_rpc = caf_comp.caf_transport.json_rpc;
+var json_rpc = caf_core.caf_transport.json_rpc;
 var WebSocket = require('ws');
 var fs = require('fs');
 

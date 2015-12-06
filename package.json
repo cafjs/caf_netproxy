@@ -1,7 +1,7 @@
 {
     "name": "caf_netproxy",
     "description": "Cloud Assistant network proxy",
-    "version": "0.2.11",
+    "version": "0.2.12",
     "author": "Antonio Lain <antlai@cafjs.com>",
     "dependencies": {
         "caf_core": "^0.2.0",
