@@ -1,5 +1,7 @@
-var caf_comp = require('caf_components');
-var caf_platform = require('caf_platform');
+var caf_core =  require('caf_core');
+var caf_comp = caf_core.caf_components;
+var caf_platform = caf_core.caf_platform;
+
 var np = require('../../index.js');
 
 exports.load = function($, spec, name, modules, cb) {

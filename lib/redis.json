@@ -1,6 +1,6 @@
 {
     "name": "cp",
-    "module" : "caf_redis#plug",
+    "module" : "caf_core#caf_redis#plug",
     "description" : "Checkpointing service",
     "env" : {
        "__ca_temporary__" : true,
