@@ -79,7 +79,7 @@
             "module": "./plug_haproxy",
             "description": "HAProxy management service",
             "env" : {
-                "templateFile" : "haproxy.cfg.mus",
+                "templateFile" : "haproxy-nossl.cfg.mus",
                 "targetFile" : "/tmp/haproxy.cfg",
                 "pidFile" : "/var/run/haproxy.pid",
                 "reloadScript" : "reload.sh",
