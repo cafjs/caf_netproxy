@@ -40,5 +40,5 @@
     "cpus": 0.1,
     "mem": 320.0,
     "instances": 1,
-    "constraints": [["hostname", "CLUSTER", "10.0.0.18"]]
+    "constraints": [["hostname", "CLUSTER", "10.240.0.2"]]
 }

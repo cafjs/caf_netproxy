@@ -9,7 +9,7 @@
 #                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis registry.cafjs.com:32000/root-netproxy
 
 
-FROM node:0.10
+FROM node:4.3
 
 EXPOSE 80
 
@@ -56,6 +56,9 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 
-RUN  . /config/http_proxy_npm; rm -fr node_modules/*; npm install  --ignore-scripts --production .
+RUN  . /config/http_proxy_npm; rm -fr node_modules/*;  rm -f npm-shrinkwrap.json; if test -f all.tgz; then tar zxvf all.tgz; fi; npm install  --production .  ; rm -f all.tgz
 
-CMD [ "npm", "start"]
+ENTRYPOINT ["node"]
+
+CMD [ "./start.js" ]
+
