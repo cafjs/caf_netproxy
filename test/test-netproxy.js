@@ -132,7 +132,7 @@ module.exports = {
                                             checkIp(test, 'localhost:3000', 2);
                                             checkIp(test, 'localhost:3001', 0);
                                             cb(null);
-                                        }, 10000);
+                                        }, 15000);
                          }
 
                      ], function(err, res) {
