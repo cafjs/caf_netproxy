@@ -1,7 +1,7 @@
 {
     "name": "caf_netproxy",
     "description": "Cloud Assistant network proxy",
-    "version": "0.2.15",
+    "version": "0.2.16",
     "author": "Antonio Lain <antlai@cafjs.com>",
     "dependencies": {
         "caf_core": "^0.2.0",
@@ -9,6 +9,7 @@
         "mustache": "^1.0.0"
     },
     "devDependencies": {
+        "eslint": "^3.1.1",
         "nodeunit" : ">=0.9",
 	 "ws" : "^1.0.1"
     },
@@ -20,7 +21,9 @@
     },
     "scripts": {
        "start" : "node ./start.js",
-        "test": "node ./node_modules/.bin/nodeunit"
+        "test": "node ./node_modules/.bin/nodeunit",
+        "eslint" : "./node_modules/.bin/eslint .",
+        "eslintfix" : "./node_modules/.bin/eslint --fix ."
     },
     "engines": { "node": ">= 0.10.1 " }
 }

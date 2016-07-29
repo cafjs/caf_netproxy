@@ -1,9 +1,10 @@
 build:
-  image: node:4.3 
+  image: node:4.3
   commands:
     - apt-get update; apt-get install -y sudo haproxy; /etc/init.d/haproxy start
     - npm install
     - npm test
+    - npm run eslint
 
 compose:
   database:
