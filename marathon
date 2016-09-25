@@ -31,6 +31,10 @@
                 {
                     "key":"env",
                     "value":"REDIS_PORT_6379_TCP_PORT=6380"
+                },
+                {
+                    "key":"env",
+                    "value":"MARATHON_KEY_PASSWORD=pleasechange"
                 }
             ],
             "forcePullImage":true
