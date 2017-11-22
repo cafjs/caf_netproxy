@@ -27,7 +27,7 @@ frontend  http-in
        option forwardfor	
        maxconn 10000
 {{#apps}}
-       acl host_{{{appName}}} hdr(host) -i {{{appName}}}
+       acl host_{{{appName}}} hdr_beg(host) -i {{{appName}}}
        use_backend bk_{{{appName}}} if host_{{{appName}}}
 {{/apps}}
 

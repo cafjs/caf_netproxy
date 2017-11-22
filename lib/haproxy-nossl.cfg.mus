@@ -28,10 +28,10 @@ frontend  http-in
        option forwardfor	
        maxconn 10000
 {{#apps}}
-       acl host_{{{appName}}} hdr(host) -i {{{appName}}}
+       acl host_{{{appName}}} hdr_beg(host) -i {{{appName}}}
        use_backend bk_{{{appName}}} if host_{{{appName}}}
        {{#target}}
-       acl host_{{{appName}}}_{{{name}}} hdr(host) -i host{{{localPort}}}-{{{appName}}}
+       acl host_{{{appName}}}_{{{name}}} hdr_beg(host) -i host{{{localPort}}}-{{{appName}}}
        use_backend bk_{{{appName}}}_{{{name}}} if host_{{{appName}}}_{{{name}}}
        {{/target}}
 {{/apps}}
