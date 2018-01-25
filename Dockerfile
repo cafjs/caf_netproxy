@@ -2,28 +2,28 @@
 # DOCKER-VERSION  1.7.0
 # AUTHOR:         Antonio Lain <antlai@cafjs.com>
 # DESCRIPTION:    Cloud Assistants network proxy (based on 'HAProxy')
-# TO_BUILD:       docker build --rm -t registry.cafjs.com:32000/root-netproxy .
+# TO_BUILD:       cafjs mkImage . registry.cafjs.com:32000/root-netproxy
 # TO_RUN:         docker run -p 80:80 -p 443:443 -e HOST=<host_ip> -e REDIS_PORT_6379_TCP_PORT=<redis_port>   registry.cafjs.com:32000/root-netproxy
 #                    or use docker-compose up -d (for local testing)
 #                    or, if redis is already locally running:
 #                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis registry.cafjs.com:32000/root-netproxy
 
 
-FROM node:4.3
+FROM node:8
 
 EXPOSE 80
 
 EXPOSE 443
 
-ADD ./config /config
+ADD ./app/config /config
 
-ADD  ./config/apt.conf /etc/apt/apt.conf
+ADD  ./app/config/apt.conf /etc/apt/apt.conf
 
 RUN cp /config/haproxy.cfg /tmp/haproxy.cfg && useradd haproxy
 
 #adapted from official haproxy docker image
 
-RUN apt-get update && apt-get install -y sudo libssl1.0.0 libpcre3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y sudo libssl1.0.0 libpcre3 rsync --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV HAPROXY_MAJOR 1.5
 ENV HAPROXY_VERSION 1.5.13
@@ -47,18 +47,20 @@ RUN . /config/http_proxy_build; buildDeps='curl gcc libc6-dev libpcre3-dev libss
 		install-bin \
 	&& mkdir -p /usr/local/etc/haproxy \
 	&& cp -R /usr/src/haproxy/examples/errorfiles /usr/local/etc/haproxy/errors \
-	&& rm -rf /usr/src/haproxy \
-	&& apt-get purge -y --auto-remove $buildDeps
+	&& rm -rf /usr/src/haproxy
+#        \
+#	&& apt-get purge -y --auto-remove $buildDeps
 
-RUN mkdir -p /usr/src/app
+RUN mkdir -p /usr/src
+
+ENV PATH="/usr/src/node_modules/.bin:${PATH}"
+
+COPY . /usr/src
+
+RUN  cd /usr/src/app && yarn install  --ignore-optional && cafjs build &&  yarn install --production --ignore-optional && yarn cache clean
 
 WORKDIR /usr/src/app
-
-COPY . /usr/src/app
-
-RUN  . /config/http_proxy_npm; rm -fr node_modules/*;  rm -f npm-shrinkwrap.json; if test -f all.tgz; then tar zxvf all.tgz; fi; npm install  --production .  ; rm -f all.tgz
 
 ENTRYPOINT ["node"]
 
 CMD [ "./start.js" ]
-
