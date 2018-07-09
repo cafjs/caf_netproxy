@@ -2,11 +2,11 @@
 # DOCKER-VERSION  1.7.0
 # AUTHOR:         Antonio Lain <antlai@cafjs.com>
 # DESCRIPTION:    Cloud Assistants network proxy (based on 'HAProxy')
-# TO_BUILD:       cafjs mkImage . registry.cafjs.com:32000/root-netproxy
-# TO_RUN:         docker run -p 80:80 -p 443:443 -e HOST=<host_ip> -e REDIS_PORT_6379_TCP_PORT=<redis_port>   registry.cafjs.com:32000/root-netproxy
+# TO_BUILD:       cafjs mkImage . gcr.io/cafjs-k8/root-netproxy
+# TO_RUN:         docker run -p 80:80 -p 443:443 -e HOST=<host_ip> -e REDIS_PORT_6379_TCP_PORT=<redis_port>   gcr.io/cafjs-k8/root-netproxy
 #                    or use docker-compose up -d (for local testing)
 #                    or, if redis is already locally running:
-#                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis registry.cafjs.com:32000/root-netproxy
+#                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis gcr.io/cafjs-k8/root-netproxy
 
 
 FROM node:8
