@@ -17,7 +17,8 @@
         "publicHostname" : "process.env.publicHostname||foo.vcap.me",
         "publicPortStart" : "process.env.publicPortStart||4000",
         "publicPortEnd" : "process.env.publicPortEnd||4010",
-        "redisPaaS" : "process.env.REDIS_PAAS||redis"
+        "redisPaaS" : "process.env.REDIS_PAAS||redis",
+        "localhostPort" : "process.env.LOCALHOST_PORT||3000"
     },
     "components": [
         {
@@ -83,7 +84,8 @@
                 "targetFile" : "/tmp/haproxy.cfg",
                 "pidFile" : "/var/run/haproxy.pid",
                 "reloadScript" : "reload.sh",
-                "checkLocalIP" : false
+                "checkLocalIP" : false,
+                "localhostPort" : "$._.env.localhostPort"
             }
         },
         {

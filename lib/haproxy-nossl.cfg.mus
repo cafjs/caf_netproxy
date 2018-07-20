@@ -20,13 +20,15 @@ defaults
  	timeout http-keep-alive  1s
 	timeout http-request    15s
 
-frontend  http-in 
+frontend  http-in
        bind 0.0.0.0:80 name http
        mode http
        option	httplog
-       option	http-server-close	    
-       option forwardfor	
+       option	http-server-close
+       option forwardfor
        maxconn 10000
+       acl host_localhost hdr_beg(host) -i localhost
+       use_backend bk_localhost if host_localhost
 {{#apps}}
        acl host_{{{appName}}} hdr_beg(host) -i {{{appName}}}
        use_backend bk_{{{appName}}} if host_{{{appName}}}
@@ -36,8 +38,11 @@ frontend  http-in
        {{/target}}
 {{/apps}}
 
+backend bk_localhost
+       balance roundrobin
+       server srv_localhost  root-application:{{{localhostPort}}} check
 
-{{#apps}}	       
+{{#apps}}
 backend bk_{{{appName}}}
        balance roundrobin
        {{#target}}
