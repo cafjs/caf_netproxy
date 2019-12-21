@@ -9,7 +9,7 @@
 #                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis gcr.io/cafjs-k8/root-netproxy
 
 
-FROM node:8
+FROM node:12
 
 EXPOSE 80
 
@@ -21,35 +21,63 @@ ADD  ./app/config/apt.conf /etc/apt/apt.conf
 
 RUN cp /config/haproxy.cfg /tmp/haproxy.cfg && useradd haproxy
 
+RUN  apt-get update && apt-get install -y sudo
 #adapted from official haproxy docker image
 
-RUN apt-get update && apt-get install -y sudo libssl1.0.0 libpcre3 rsync --no-install-recommends && rm -rf /var/lib/apt/lists/*
+ENV HAPROXY_VERSION 1.5.19
+ENV HAPROXY_URL https://www.haproxy.org/download/1.5/src/haproxy-1.5.19.tar.gz
+ENV HAPROXY_SHA256 e00ae2a633da614967f2e3ebebdb817ec537cba8383b833fc8d9a506876e0d5e
 
-ENV HAPROXY_MAJOR 1.5
-ENV HAPROXY_VERSION 1.5.13
-ENV HAPROXY_MD5 30cf07875ecae4fd6c4c309627afa8f1
-
-# see http://sources.debian.net/src/haproxy/1.5.8-1/debian/rules/ for some helpful navigation of the possible "make" arguments
-RUN . /config/http_proxy_build; buildDeps='curl gcc libc6-dev libpcre3-dev libssl-dev make' \
-	&& set -x \
-	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& curl -SL "http://www.haproxy.org/download/${HAPROXY_MAJOR}/src/haproxy-${HAPROXY_VERSION}.tar.gz" -o haproxy.tar.gz \
-	&& echo "${HAPROXY_MD5}  haproxy.tar.gz" | md5sum -c \
+# see https://sources.debian.net/src/haproxy/jessie/debian/rules/ for some helpful navigation of the possible "make" arguments
+RUN set -x \
+	\
+	&& savedAptMark="$(apt-mark showmanual)" \
+	&& apt-get update && apt-get install -y --no-install-recommends \
+		ca-certificates \
+		gcc \
+		libc6-dev \
+		libpcre2-dev \
+		libssl1.0-dev \
+		make \
+		wget \
+		zlib1g-dev \
+	&& rm -rf /var/lib/apt/lists/* \
+	\
+	&& wget -O haproxy.tar.gz "$HAPROXY_URL" \
+	&& echo "$HAPROXY_SHA256 *haproxy.tar.gz" | sha256sum -c \
 	&& mkdir -p /usr/src/haproxy \
 	&& tar -xzf haproxy.tar.gz -C /usr/src/haproxy --strip-components=1 \
 	&& rm haproxy.tar.gz \
-	&& make -j 8 -C /usr/src/haproxy \
+	\
+	&& makeOpts=' \
 		TARGET=linux2628 \
-		USE_PCRE=1 PCREDIR= \
+		USE_GETADDRINFO=1 \
 		USE_OPENSSL=1 \
+		USE_PCRE2=1 USE_PCRE2_JIT=1 \
 		USE_ZLIB=1 \
-		all \
-		install-bin \
+		\
+		EXTRA_OBJS=" \
+		" \
+	' \
+	&& nproc="$(nproc)" \
+	&& eval "make -C /usr/src/haproxy -j '$nproc' all $makeOpts" \
+	&& eval "make -C /usr/src/haproxy install-bin $makeOpts" \
+	\
 	&& mkdir -p /usr/local/etc/haproxy \
 	&& cp -R /usr/src/haproxy/examples/errorfiles /usr/local/etc/haproxy/errors \
-	&& rm -rf /usr/src/haproxy
-#        \
-#	&& apt-get purge -y --auto-remove $buildDeps
+	&& rm -rf /usr/src/haproxy \
+	\
+	&& apt-mark auto '.*' > /dev/null \
+	&& { [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; } \
+	&& find /usr/local -type f -executable -exec ldd '{}' ';' \
+		| awk '/=>/ { print $(NF-1) }' \
+		| sort -u \
+		| xargs -r dpkg-query --search \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -r apt-mark manual \
+	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+
 
 RUN mkdir -p /usr/src
 
