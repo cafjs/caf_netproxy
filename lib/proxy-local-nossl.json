@@ -18,7 +18,8 @@
         "publicPortStart" : "process.env.publicPortStart||4000",
         "publicPortEnd" : "process.env.publicPortEnd||4010",
         "redisPaaS" : "process.env.REDIS_PAAS||redis",
-        "localhostPort" : "process.env.LOCALHOST_PORT||3000"
+        "localhostPort" : "process.env.LOCALHOST_PORT||3000",
+        "logLevel" : "process.env.LOG_LEVEL||WARN"
     },
     "components": [
         {
@@ -26,7 +27,7 @@
             "module": "caf_core#caf_components#plug_log",
             "description": "Logger service",
             "env" : {
-                "logLevel" : "DEBUG"
+                "logLevel" : "$._.env.logLevel"
             }
         },
         {
