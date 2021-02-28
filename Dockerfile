@@ -9,7 +9,7 @@
 #                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis gcr.io/cafjs-k8/root-netproxy
 
 
-FROM node:12
+FROM node:14
 
 EXPOSE 80
 
@@ -83,9 +83,15 @@ RUN mkdir -p /usr/src
 
 ENV PATH="/usr/src/node_modules/.bin:${PATH}"
 
+ENV PATH="/usr/local/bin:${PATH}"
+
+RUN yarn config set prefix /usr/local
+
+RUN yarn global add caf_build && yarn cache clean
+
 COPY . /usr/src
 
-RUN  cd /usr/src/app && yarn install  --ignore-optional && cafjs build &&  yarn install --production --ignore-optional && yarn cache clean
+RUN  cd /usr/src/app && yarn install --production --ignore-optional && cafjs build && yarn cache clean
 
 WORKDIR /usr/src/app
 
