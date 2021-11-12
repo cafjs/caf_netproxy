@@ -9,7 +9,7 @@
 #                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis gcr.io/cafjs-k8/root-netproxy
 
 
-FROM node:14
+FROM node:16
 
 EXPOSE 80
 
@@ -24,60 +24,72 @@ RUN cp /config/haproxy.cfg /tmp/haproxy.cfg && useradd haproxy
 RUN  apt-get update && apt-get install -y sudo
 #adapted from official haproxy docker image
 
-ENV HAPROXY_VERSION 1.5.19
-ENV HAPROXY_URL https://www.haproxy.org/download/1.5/src/haproxy-1.5.19.tar.gz
-ENV HAPROXY_SHA256 e00ae2a633da614967f2e3ebebdb817ec537cba8383b833fc8d9a506876e0d5e
+ENV HAPROXY_VERSION 1.7.14
+ENV HAPROXY_URL https://www.haproxy.org/download/1.7/src/haproxy-1.7.14.tar.gz
+ENV HAPROXY_SHA256 1f9fb6c5a342803037a622c7dd04702b0d010a88b5c3922cd3da71a34f3377a4
 
 # see https://sources.debian.net/src/haproxy/jessie/debian/rules/ for some helpful navigation of the possible "make" arguments
-RUN set -x \
+RUN set -eux; \
 	\
-	&& savedAptMark="$(apt-mark showmanual)" \
-	&& apt-get update && apt-get install -y --no-install-recommends \
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		gcc \
 		libc6-dev \
+		liblua5.3-dev \
 		libpcre2-dev \
-		libssl1.0-dev \
+		libssl-dev \
 		make \
 		wget \
 		zlib1g-dev \
-	&& rm -rf /var/lib/apt/lists/* \
+	; \
+	rm -rf /var/lib/apt/lists/*; \
 	\
-	&& wget -O haproxy.tar.gz "$HAPROXY_URL" \
-	&& echo "$HAPROXY_SHA256 *haproxy.tar.gz" | sha256sum -c \
-	&& mkdir -p /usr/src/haproxy \
-	&& tar -xzf haproxy.tar.gz -C /usr/src/haproxy --strip-components=1 \
-	&& rm haproxy.tar.gz \
+	wget -O haproxy.tar.gz "$HAPROXY_URL"; \
+	echo "$HAPROXY_SHA256 *haproxy.tar.gz" | sha256sum -c; \
+	mkdir -p /usr/src/haproxy; \
+	tar -xzf haproxy.tar.gz -C /usr/src/haproxy --strip-components=1; \
+	rm haproxy.tar.gz; \
 	\
-	&& makeOpts=' \
+	makeOpts=' \
 		TARGET=linux2628 \
 		USE_GETADDRINFO=1 \
+		USE_LUA=1 LUA_INC=/usr/include/lua5.3 \
 		USE_OPENSSL=1 \
 		USE_PCRE2=1 USE_PCRE2_JIT=1 \
 		USE_ZLIB=1 \
 		\
 		EXTRA_OBJS=" \
 		" \
-	' \
-	&& nproc="$(nproc)" \
-	&& eval "make -C /usr/src/haproxy -j '$nproc' all $makeOpts" \
-	&& eval "make -C /usr/src/haproxy install-bin $makeOpts" \
+	'; \
+# https://salsa.debian.org/haproxy-team/haproxy/-/commit/53988af3d006ebcbf2c941e34121859fd6379c70
+	dpkgArch="$(dpkg --print-architecture)"; \
+	case "$dpkgArch" in \
+		armel) makeOpts="$makeOpts ADDLIB=-latomic" ;; \
+	esac; \
 	\
-	&& mkdir -p /usr/local/etc/haproxy \
-	&& cp -R /usr/src/haproxy/examples/errorfiles /usr/local/etc/haproxy/errors \
-	&& rm -rf /usr/src/haproxy \
+	nproc="$(nproc)"; \
+	eval "make -C /usr/src/haproxy -j '$nproc' all $makeOpts"; \
+	eval "make -C /usr/src/haproxy install-bin $makeOpts"; \
 	\
-	&& apt-mark auto '.*' > /dev/null \
-	&& { [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; } \
-	&& find /usr/local -type f -executable -exec ldd '{}' ';' \
+	mkdir -p /usr/local/etc/haproxy; \
+	cp -R /usr/src/haproxy/examples/errorfiles /usr/local/etc/haproxy/errors; \
+	rm -rf /usr/src/haproxy; \
+	\
+	apt-mark auto '.*' > /dev/null; \
+	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
+	find /usr/local -type f -executable -exec ldd '{}' ';' \
 		| awk '/=>/ { print $(NF-1) }' \
 		| sort -u \
 		| xargs -r dpkg-query --search \
 		| cut -d: -f1 \
 		| sort -u \
 		| xargs -r apt-mark manual \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-
+	; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	\
+# smoke test
+	haproxy -v
 
 RUN mkdir -p /usr/src
 
