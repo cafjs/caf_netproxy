@@ -14,7 +14,7 @@
         "longInterval": "process.env.longInterval||10000",
         "dieDelay": "process.env.dieDelay||-1",
         "maxHangRetries":  "process.env.maxHangRetries||200",
-        "publicHostname" : "process.env.publicHostname||foo.vcap.me",
+        "publicHostname" : "process.env.publicHostname||foo.localtest.me",
         "publicPortStart" : "process.env.publicPortStart||4000",
         "publicPortEnd" : "process.env.publicPortEnd||4010"
     },

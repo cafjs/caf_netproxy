@@ -5,13 +5,13 @@
       {"name": "p3", "localPort" : 4002, "remoteTarget" : "localhost:3002"}
     ],
     "apps": [
-        {"appName": "foo.vcap.me",
+        {"appName": "foo.localtest.me",
          "targets": [
              {"name": "p1", "remoteTarget" : "localhost:3000"},
              {"name": "p2", "remoteTarget" : "localhost:3001"}
          ]
         },
-        {"appName": "bar.vcap.me",
+        {"appName": "bar.localtest.me",
          "targets": [
              {"name": "p3", "remoteTarget" : "localhost:3002"}
          ]
