@@ -9,7 +9,7 @@
 #                  docker run -p 80:80 -p 443:443 --link <redis_name>:redis gcr.io/cafjs-k8/root-netproxy
 
 
-FROM node:16
+FROM node:18
 
 EXPOSE 80
 
